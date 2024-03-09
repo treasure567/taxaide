@@ -1,10 +1,10 @@
 const { response: response } = require('../../utils/response');
 const Todo = require('../../models/Todo');
-const { create_todo, todoId } = require('../../utils/validator/todo');
+const { create_todo, update_todo } = require('../../utils/validator/todo');
 const { hiddenTodoData } = require('../../utils/apiFilter');
 
 
-const createTodo = async (req, res) => {
+exports.createTodo = async (req, res) => {
     try {
         const user = req.user;
         const { title, description } = req.body;
@@ -24,7 +24,7 @@ const createTodo = async (req, res) => {
     }
 }
 
-const getTodos = async (req, res) => {
+exports.getTodos = async (req, res) => {
     try {
         const user = req.user;
         const todos = await Todo.find({ user: user }).select(hiddenTodoData());;
@@ -34,7 +34,7 @@ const getTodos = async (req, res) => {
     }
 }
 
-const updateTodo = async (req, res) => {
+exports.updateTodo = async (req, res) => {
     try {
         const user = req.user;
         const { title, description, completed, todo_id } = req.body;
@@ -42,22 +42,49 @@ const updateTodo = async (req, res) => {
         if (!valid) {
             return response(res, 401, { status: false, message: "Invalid input", errors });
         }
-        await User.updateOne({ _id: todo_id }, { 
+        try {
+            check_todo = await Todo.findById(todo_id);
+            if (!check_todo) {
+                return response(res, 400, { status: false, message: "Invalid Todoid" });
+            }
+            if (check_todo.user !== user) {
+                return response(res, 400, { status: false, message: "Invalid Access" });
+            }
+        } catch (err) {
+            return response(res, 500, { status: false, message: "Invalid todo id", error: err.message });
+        }
+        await Todo.updateOne({ _id: todo_id }, { 
             title: title,
             description: description,
             completed: completed
         });
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        response(res, 200, { status: true, data: task });
+        return response(res, 200, { status: true, message: "Todo updated successfully"});
     } catch (error) {
         response(res, 500, { status: false, message: error.message });
     }
 }
 
-const deleteTask = async (req, res) => {
+exports.deleteTodo = async (req, res) => {
     try {
-        await Task.findByIdAndDelete(req.params.id);
-        response(res, 200, { status: true, message: 'Task deleted successfully' });
+        const user = req.user;
+        const { todo_id } = req.body;
+        const { errors, valid } = libraryBookId(book_id);
+        if (!valid) {
+            return response(res, 401, { status: false, message: "Invalid input", errors });
+        }
+        try {
+            check_todo = await Todo.findById(todo_id);
+            if (!check_todo) {
+                return response(res, 400, { status: false, message: "Invalid Todoid" });
+            }
+            if (check_todo.user !== user) {
+                return response(res, 400, { status: false, message: "Invalid Access" });
+            }
+        } catch (err) {
+            return response(res, 500, { status: false, message: "Invalid todo id", error: err.message });
+        }
+        await Todo.deleteOne({ _id: todo_id });
+        return response(res, 200, { status: true, message: "Todo deleted successfully"});
     } catch (error) {
         response(res, 500, { status: false, message: error.message });
     }
