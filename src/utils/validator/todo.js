@@ -48,5 +48,5 @@ const update_todo = (title = '', description = '', completed = '', todo_id = '')
 
 module.exports = {
     create_todo,
-    todoId
+    update_todo
 }
