@@ -18,7 +18,10 @@ exports.createTodo = async (req, res) => {
             user: user
         });
         await todo.save();
-        return response(res, 200, { status: true, message: "Todo created successfully" });
+        data = {
+            '_id': todo._id
+        };
+        return response(res, 200, { status: true, message: "Todo created successfully", data: data });
     } catch (error) {
         return response(res, 500, { status: false, message: "Failed to resend OTP" });
     }
@@ -58,7 +61,10 @@ exports.updateTodo = async (req, res) => {
             description: description,
             completed: completed
         });
-        return response(res, 200, { status: true, message: "Todo updated successfully"});
+        data = {
+            '_id': todo_id
+        };
+        return response(res, 200, { status: true, message: "Todo updated successfully", data: data});
     } catch (error) {
         response(res, 500, { status: false, message: error.message });
     }
