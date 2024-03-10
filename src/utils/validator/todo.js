@@ -34,9 +34,23 @@ const update_todo = (title = '', description = '', completed = '', todo_id = '')
     if (validator.isEmail(completed)) {
         errors["completed"] = "Completed cannot be blank";
     }
-    if (validator.isBoolean(completed)) {
-        errors["completed"] = "Completed must be a boolean";
+    if (validator.isEmpty(completed)) {
+        errors["completed"] = "Completed cannot be blank";
     }
+    if (completed !== 'yes' && completed !== 'no') {
+        errors["completed"] = "Completed must be yes or no";
+    }
+    if (validator.isEmpty(todo_id)) {
+        errors['todo_id'] = "Todo ID is required"
+    }
+    return {
+        errors,
+        valid: Object.keys(errors).length < 1
+    }
+}
+
+const delete_todo = (todo_id = '') => {
+    const errors = {};
     if (validator.isEmpty(todo_id)) {
         errors['todo_id'] = "Todo ID is required"
     }
@@ -48,5 +62,6 @@ const update_todo = (title = '', description = '', completed = '', todo_id = '')
 
 module.exports = {
     create_todo,
-    update_todo
+    update_todo,
+    delete_todo
 }
