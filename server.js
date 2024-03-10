@@ -37,10 +37,11 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-require("./src/routes/api/v1/taskRoutes")(app);
+require("./src/routes/api/v1/todoRoutes")(app);
 
 app.get('/', (req, res) => {
     res.json({
+        'status': true,
         'message': "Taxaide API testing"
     });
 });
