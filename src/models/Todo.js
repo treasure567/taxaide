@@ -19,7 +19,11 @@ const TodoSchema = mongoose.Schema(
             required: true
         },
     },
-    { timestamps: true }
+    { 
+        timestamps: { 
+            currentTime: () => new Date().toLocaleString("en-NG", {timeZone: "Africa/Lagos"}) 
+        } 
+    }
 )
 
 const Todo = mongoose.model('Todo', TodoSchema);
