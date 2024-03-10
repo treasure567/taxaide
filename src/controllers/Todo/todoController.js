@@ -1,6 +1,6 @@
 const { response: response } = require('../../utils/response');
 const Todo = require('../../models/Todo');
-const { create_todo, update_todo } = require('../../utils/validator/todo');
+const { create_todo, update_todo, delete_todo } = require('../../utils/validator/todo');
 const { hiddenTodoData } = require('../../utils/apiFilter');
 
 
@@ -27,7 +27,7 @@ exports.createTodo = async (req, res) => {
 exports.getTodos = async (req, res) => {
     try {
         const user = req.user;
-        const todos = await Todo.find({ user: user }).select(hiddenTodoData());;
+        const todos = await Todo.find({ user: user }).sort({ createdAt: -1 }).select(hiddenTodoData());;
         return response(res, 200, { status: true, message: "Todo(s) fetched successfully", data: todos});
     } catch (error) {
         return response(res, 500, { status: false, message: "Server Error Occured", error: err.message });
@@ -68,7 +68,7 @@ exports.deleteTodo = async (req, res) => {
     try {
         const user = req.user;
         const { todo_id } = req.body;
-        const { errors, valid } = libraryBookId(book_id);
+        const { errors, valid } = delete_todo(todo_id);
         if (!valid) {
             return response(res, 401, { status: false, message: "Invalid input", errors });
         }
