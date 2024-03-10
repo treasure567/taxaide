@@ -1,5 +1,5 @@
 const hiddenTodoData = () => {
-    return '-updatedAt -__v';
+    return '-user -__v';
 }
 
 module.exports = {
