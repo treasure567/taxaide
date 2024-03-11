@@ -23,7 +23,7 @@ exports.createTodo = async (req, res) => {
         };
         return response(res, 200, { status: true, message: "Todo created successfully", data: data });
     } catch (error) {
-        return response(res, 500, { status: false, message: "Failed to resend OTP" });
+        return response(res, 500, { status: false, message: "Failed to create Todo" });
     }
 }
 
